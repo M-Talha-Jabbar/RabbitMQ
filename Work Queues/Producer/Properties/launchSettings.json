@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "NewTask": {
+      "commandName": "Project",
+      "commandLineArgs": "Fourth message......"
+    }
+  }
+}
