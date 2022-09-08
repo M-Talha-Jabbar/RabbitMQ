@@ -1,6 +1,5 @@
 ﻿using RabbitMQ.Client;
 using System;
-using System.Linq;
 using System.Text;
 
 namespace EmitLog
@@ -15,17 +14,15 @@ namespace EmitLog
             {
                 using (var channel = connection.CreateModel())
                 {
-                    channel.ExchangeDeclare(exchange: "direct_logs",
-                                            type: ExchangeType.Direct); // Exchange will only be created if it doesn't exist already.
-
-                    string severity = (args.Length > 0) ? args[0] : "info"; // We assume that 'severity' can be one of 'info', 'warning', 'error'.
+                    channel.ExchangeDeclare(exchange: "logs",
+                                            type: ExchangeType.Fanout); // Exchange will only be created if it doesn't exist already.
 
                     string message = GetMessage(args);
 
                     var body = Encoding.UTF8.GetBytes(message);
 
-                    channel.BasicPublish(exchange: "direct_logs", 
-                                         routingKey: severity, 
+                    channel.BasicPublish(exchange: "logs", // Publishing the message into 'logs' exchange.
+                                         routingKey: "", // Since the Exchange Type is 'Fanout', it just broadcasts all the messages it receives to all the queues it knows. So no need to define routingKey.
                                          basicProperties: null,
                                          body: body);
 
@@ -39,7 +36,7 @@ namespace EmitLog
 
         private static string GetMessage(string[] args)
         {
-            return ((args.Length > 1) ? string.Join(" ", args.Skip(1).ToArray()) : "Hello World!");
+            return ((args.Length > 0) ? string.Join(" ", args) : "Hello World!");
         }
     }
 }

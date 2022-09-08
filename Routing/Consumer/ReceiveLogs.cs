@@ -31,7 +31,7 @@ namespace ReceiveLogs
                         return;
                     }
 
-                    foreach(var severity in args)
+                    foreach(var severity in args) // We assume that 'severity' can be one of 'info', 'warning', 'error'.
                     {
                         channel.QueueBind(queue: queueName,
                                       exchange: "direct_logs",
